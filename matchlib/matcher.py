@@ -21,4 +21,4 @@ def match_all(config, string_data_iter):
         if similarity > minimum_similarity:
             yield { "id_a": a["id"],
                     "id_b": b["id"],
-                    "similarity": 0.0 }
+                    "similarity": similarity }
