@@ -5,18 +5,14 @@ When used using the provided wrapper/adapter `matcher.jplag_ext.match`, it can b
 
 ## Installing
 
-* Activate the virtual environment used by Radar
-* Download all compilation dependencies (creates a directory `thirdparty` into current working dir):
+```
+pip install .
+```
 
-    ```python3 setup.py prepare```
-
-* Build and install the extension:
-
-    ```pip install -e .```
-
-* To make sure everything works correctly, it is a good idea to run some tests for the extension:
-
-    ```python3 ./test.py```
+To make sure everything works correctly, it is a good idea to run a few tests:
+```
+python3 test.py
+```
 
 ## References
 
