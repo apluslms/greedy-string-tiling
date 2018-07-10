@@ -67,7 +67,7 @@ gstmodule = setuptools.Extension(
 
 setuptools.setup(
     name='greedy_string_tiling',
-    version='0.1.0',
+    version='0.3.0',
     description='C++ implementation of the Greedy String Tiling string matching algorithm.',
     long_description=readme_file_contents,
     url='https://github.com/Aalto-LeTech/radar/tree/master/extensions/greedy_string_tiling',
@@ -76,15 +76,14 @@ setuptools.setup(
     author_email='matias.lindgren@gmail.com',
     license='MIT',
 
+    find_packages=True,
     install_requires=[
         'hypothesis', # For testing the built module. Not required for running, but recommended for sanity.
     ],
-
     cmdclass={
         "prepare": PrepareCommand,
         "build_ext": PrepareAndBuildCommand,
     },
-
     ext_modules=[
         gstmodule,
     ],
