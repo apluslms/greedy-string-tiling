@@ -1,7 +1,6 @@
 # Greedy String Tiling
 
 This Python package implements a C++ extension of the Running Karp-Rabin Greedy String Tiling algorithm [1], which can be used for source code similarity detection as has been done with the JPlag system [2].
-When used using the provided wrapper/adapter `matcher.jplag_ext.match`, it can be expected to behave exactly as the pure Python implementation `matcher.jplag.match`, except faster.
 
 ## Installing
 
