@@ -26,7 +26,7 @@ class TokenMatchSet:
 
     def reverse(self):
         r = TokenMatchSet()
-        r.store.extend(m.reverse() for m in self.store)
+        r.store.extend(m.reversed() for m in self.store)
         return r
 
     def match_count(self):
