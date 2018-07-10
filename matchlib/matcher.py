@@ -12,13 +12,13 @@ def match_all(config, string_data_iter):
     minimum_match_length = config.get("minimum_match_length", 1)
     minimum_similarity = config.get("minimum_similarity", -1)
     for a, b, in itertools.combinations(string_data_iter, 2):
-        result = {"id_a": a["id"], "id_b": b["id"], "similarity": 0.0}
         tokens_a, tokens_b = a["tokens"], b["tokens"]
-        if max(len(tokens_a), len(tokens_b)) >= minimum_match_length:
-            marks_a, marks_b = a.get("marks", ''), b.get("marks", '')
-            matches = greedy_string_tiling(tokens_a, marks_a, tokens_b, marks_b, minimum_match_length)
-            similarity = safe_div(matches.token_count(), (len(tokens_a) + len(tokens_b)) / 2)
-            result["similarity"] = similarity
-        if result["similarity"] > minimum_similarity:
-            yield result
-
+        if max(len(tokens_a), len(tokens_b)) < minimum_match_length:
+            continue
+        marks_a, marks_b = a.get("marks", ''), b.get("marks", '')
+        matches = greedy_string_tiling(tokens_a, marks_a, tokens_b, marks_b, minimum_match_length)
+        similarity = safe_div(matches.token_count(), (len(tokens_a) + len(tokens_b)) / 2)
+        if similarity > minimum_similarity:
+            yield { "id_a": a["id"],
+                    "id_b": b["id"],
+                    "similarity": 0.0 }
