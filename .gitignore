@@ -1,0 +1,9 @@
+*.so
+build*
+*.py[co]
+
+*.egg-info
+
+.hypothesis
+
+thirdparty
