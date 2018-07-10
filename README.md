@@ -5,12 +5,13 @@ This Python package implements a C++ extension of the Running Karp-Rabin Greedy 
 ## Installing
 
 ```
-pip install .
+git clone --depth 1 https://github.com/Aalto-LeTech/greedy-string-tiling.git
+pip install ./greedy-string-tiling
 ```
 
 To make sure everything works correctly, it is a good idea to run a few tests:
 ```
-python3 test.py
+python3 ./greedy-string-tiling/test.py
 ```
 
 ## References
