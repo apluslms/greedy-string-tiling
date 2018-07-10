@@ -1,5 +1,5 @@
 import setuptools
-import setuptools.command.build_py as build_py
+import setuptools.command.build_ext as build_ext
 import subprocess
 import codecs
 import os
@@ -43,7 +43,7 @@ class PrepareCommand(setuptools.Command):
             subprocess.run(cmd, cwd=self.output_dir, check=True)
 
 
-class BuildCommand(build_py.build_py):
+class PrepareAndBuildCommand(build_ext.build_ext):
     def run(self):
         self.run_command("prepare")
         super().run()
@@ -82,7 +82,7 @@ setuptools.setup(
 
     cmdclass={
         "prepare": PrepareCommand,
-        "build_py": BuildCommand,
+        "build_ext": PrepareAndBuildCommand,
     },
 
     ext_modules=[
