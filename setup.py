@@ -76,7 +76,7 @@ setuptools.setup(
     author_email='matias.lindgren@gmail.com',
     license='MIT',
 
-    find_packages=True,
+    packages=setuptools.find_packages(),
     install_requires=[
         'hypothesis', # For testing the built module. Not required for running, but recommended for sanity.
     ],
