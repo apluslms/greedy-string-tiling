@@ -1,4 +1,5 @@
 import setuptools
+import setuptools.command.build_py as build_py
 import subprocess
 import codecs
 import os
@@ -8,11 +9,13 @@ here = os.path.abspath(os.path.dirname(__file__))
 with codecs.open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
     readme_file_contents = f.read()
 
+
 GIT_DEPENDENCIES = (
     ("rollinghashcpp", "https://github.com/lemire/rollinghashcpp.git"),
     # backup fork available at https://github.com/matiaslindgren/rollinghashcpp
 )
 THIRD_PARTY_DIR = "thirdparty"
+
 
 class PrepareCommand(setuptools.Command):
     description = "clone dependencies from git remotes"
@@ -38,6 +41,12 @@ class PrepareCommand(setuptools.Command):
                 continue
             cmd = ("git", "clone", "--depth", "1" , url, name)
             subprocess.run(cmd, cwd=self.output_dir, check=True)
+
+
+class BuildCommand(build_py.build_py):
+    def run(self):
+        self.run_command("prepare")
+        super().run()
 
 
 gstmodule = setuptools.Extension(
@@ -73,6 +82,7 @@ setuptools.setup(
 
     cmdclass={
         "prepare": PrepareCommand,
+        "build_py": BuildCommand,
     },
 
     ext_modules=[
