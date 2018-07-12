@@ -60,13 +60,6 @@ def safe_div(a, b):
     return a / b if b > 0 else 0.0
 
 
-def top_marks(length, top):
-    for _ in range(top):
-        yield True
-    for _ in range(top, length):
-        yield False
-
-
 def bitstring(bools):
     """
     Return a string of bits from an iterable over booleans.
