@@ -4,12 +4,17 @@ from matchlib.matchers import greedy_string_tiling
 from matchlib.util import TokenMatchSet
 
 
+RESULT_KEYS = ["id_a", "id_b", "match_indexes", "similarity"]
+
+
 def _match_all(config, pairs_to_compare):
     """
     Compare all pairs and return an iterator over the matches.
     """
     minimum_match_length = config.get("minimum_match_length", 1)
     minimum_similarity = config.get("minimum_similarity", -1)
+    similarity_precision = config.get("similarity_precision")
+    optional_round = (lambda x: round(x, similarity_precision)) if similarity_precision is not None else (lambda x: x)
     for a, b, in pairs_to_compare:
         if max(a["longest_authored_tile"], b["longest_authored_tile"]) < minimum_match_length:
             # Skip pairs that have too few unique tokens
@@ -30,10 +35,7 @@ def _match_all(config, pairs_to_compare):
             avg_unique_tokens = (a["authored_token_count"] + b["authored_token_count"]) / 2
             similarity = matches.token_count() / avg_unique_tokens if avg_unique_tokens > 0 else 0
         if similarity > minimum_similarity:
-            yield { "id_a": a["id"],
-                    "id_b": b["id"],
-                    "match_indexes": matches.json(),
-                    "similarity": similarity }
+            yield [a["id"], b["id"], matches.json(), optional_round(similarity)]
 
 
 def match_all_combinations(config, string_data_iter):
