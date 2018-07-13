@@ -1,6 +1,6 @@
-import gst # Compiled C-extension
+from gst import match as match_c_ext
 
-from matchlib.util import TokenMatch, TokenMatchSet, bitstring
+from matchlib.util import TokenMatch, TokenMatchSet
 
 
 def greedy_string_tiling(tokens_a, marks_a, tokens_b, marks_b, min_length):
@@ -15,10 +15,10 @@ def greedy_string_tiling(tokens_a, marks_a, tokens_b, marks_b, min_length):
     reverse = len(tokens_b) < len(tokens_a)
     pattern = tokens_b if reverse else tokens_a
     text = tokens_a if reverse else tokens_b
-    pattern_marks = bitstring(marks_b if reverse else marks_a)
-    text_marks = bitstring(marks_a if reverse else marks_b)
+    pattern_marks = marks_b if reverse else marks_a
+    text_marks = marks_a if reverse else marks_b
 
-    match_list = gst.match(pattern, pattern_marks, text, text_marks, min_length)
+    match_list = match_c_ext(pattern, pattern_marks, text, text_marks, min_length)
 
     if reverse:
         matches.store = [TokenMatch(match[1], match[0], match[2]) for match in match_list]

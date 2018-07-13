@@ -39,6 +39,12 @@ class TokenMatchSet:
         sorted_match_list = [[m.a, m.b, m.length] for m in sorted(self.store, key=lambda m: m.a)]
         return json.dumps(sorted_match_list, separators=(",", ":"))
 
+    @classmethod
+    def full_match_from_length(cls, l):
+        ms = cls()
+        ms.add_non_overlapping(TokenMatch(0, 0, l))
+        return ms
+
 
 class TokenMatch:
 
@@ -54,14 +60,3 @@ class TokenMatch:
 
     def reversed(self):
         return TokenMatch(self.b, self.a, self.length)
-
-
-def safe_div(a, b):
-    return a / b if b > 0 else 0.0
-
-
-def bitstring(bools):
-    """
-    Return a string of bits from an iterable over booleans.
-    """
-    return ''.join(str(int(b)) for b in bools)
