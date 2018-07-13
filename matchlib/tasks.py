@@ -1,5 +1,5 @@
 import celery
-from matchlib.matcher import match_all_combinations, match_to_others
+from matchlib import matcher
 
 logger = celery.utils.log.get_task_logger(__name__)
 
@@ -7,7 +7,7 @@ logger = celery.utils.log.get_task_logger(__name__)
 @celery.shared_task
 def match_all_combinations(*args):
     logger.info("Got match all combinations task")
-    matches = list(match_all_combinations(*args))
+    matches = list(matcher.match_all_combinations(*args))
     logger.info("All matched")
     return matches
 
@@ -15,6 +15,6 @@ def match_all_combinations(*args):
 @celery.shared_task
 def match_to_others(*args):
     logger.info("Got match to others task")
-    matches = list(match_to_others(*args))
+    matches = list(matcher.match_to_others(*args))
     logger.info("All matched")
     return matches
