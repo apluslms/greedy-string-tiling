@@ -1,7 +1,7 @@
 """
 Celery app for running matchlib tasks asynchronously.
 For example, if you want to run 4 workers in parallel, consuming from the queue 'large_tasks':
-  celery --app matchlib --concurrency 4 --queue large_tasks --loglevel INFO
+  python3 -m celery worker --app matchlib.celerymain --concurrency 4 --queue large_tasks --loglevel INFO
 """
 import os
 from celery import Celery
@@ -9,11 +9,13 @@ from celery import Celery
 from matchlib.tasks import match_all_combinations, match_to_others
 
 def make_celery():
-    user = os.environ.get("BROKER_USER", "guest")
-    password = os.environ.get("BROKER_PASSWORD", "guest")
-    address = os.environ.get("BROKER_ADDRESS", "localhost:5672")
+    user = os.environ["BROKER_USER"]
+    secret_path = os.environ["BROKER_SECRET_PATH"]
+    with open(secret_path) as f:
+        password = f.read().rstrip()
+    address = os.environ["BROKER_ADDRESS"]
     broker_address = f"amqp://{user}:{password}@{address}"
-    return Celery("lcs_celery", broker=broker_address)
+    return Celery("matchlib_celerymain", broker=broker_address)
 
 app = make_celery()
 
