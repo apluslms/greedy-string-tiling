@@ -11,14 +11,15 @@ with codecs.open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
 
 
 GIT_DEPENDENCIES = (
-    ("rollinghashcpp", "https://github.com/lemire/rollinghashcpp.git"),
+    ("rollinghashcpp", "https://github.com/lemire/rollinghashcpp/archive/8ed2216cc1143803764403485948a610ec0ea23a.tar.gz"),
     # backup fork available at https://github.com/matiaslindgren/rollinghashcpp
 )
+
 THIRD_PARTY_DIR = "thirdparty"
 
 
 class PrepareCommand(setuptools.Command):
-    description = "clone dependencies from git remotes"
+    description = "download dependencies from git"
     user_options = [
         ("output-dir=", "o", "destination directory for all repos"),
     ]
@@ -35,12 +36,18 @@ class PrepareCommand(setuptools.Command):
         if not os.path.exists(self.output_dir):
             os.mkdir(self.output_dir)
         for name, url in GIT_DEPENDENCIES:
-            out_dir = os.path.join(self.output_dir, name)
-            if os.path.exists(out_dir):
-                print(out_dir, "already exists, skipping")
+            out_path = os.path.join(self.output_dir, name)
+            if os.path.exists(out_path):
+                print(out_path, "already exists, skipping")
                 continue
-            cmd = ("git", "clone", "--depth", "1" , url, name)
-            subprocess.run(cmd, cwd=self.output_dir, check=True)
+            os.mkdir(out_path)
+            tar_name = name + ".tar.gz"
+            cmds = (
+                ("curl", "--location", url, "--output", tar_name),
+                ("tar", "--extract", "--gunzip", "--file", tar_name, "--directory", name, "--strip-components", "1"),
+            )
+            for cmd in cmds:
+                subprocess.run(cmd, cwd=self.output_dir, check=True)
 
 
 class PrepareAndBuildCommand(build_ext.build_ext):
@@ -67,7 +74,7 @@ gstmodule = setuptools.Extension(
 
 setuptools.setup(
     name='greedy_string_tiling',
-    version='0.7.0',
+    version='0.8.0',
     description='C++ implementation of the Greedy String Tiling string matching algorithm.',
     long_description=readme_file_contents,
     url='https://github.com/Aalto-LeTech/radar/tree/master/extensions/greedy_string_tiling',
