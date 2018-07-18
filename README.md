@@ -13,7 +13,7 @@ With tests:
 ```
 git clone --depth 1 https://github.com/Aalto-LeTech/greedy-string-tiling.git
 cd greedy-string-tiling
-pip install .
+pip install . hypothesis
 python3 test.py
 ```
 
