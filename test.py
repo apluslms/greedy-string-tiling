@@ -2,6 +2,8 @@ import unittest
 import importlib
 import string
 
+import gst
+
 from hypothesis import strategies, settings, given
 
 # TODO test cases for:
@@ -12,6 +14,14 @@ from hypothesis import strategies, settings, given
 # varying minmatch length
 
 
+EDGE_CASES = (
+    # Causes unterminated loop in gst.cpp match_strings #FIXME
+    (
+        "09ggg2cgtrrdd27a2ckjnkjnknokjnnkjnjnnkjnkjnjnjnjnjnjnjnjnjnnkjnnjnmnjnjnjnjnjnjnjnjnhnjnkjnjnjnjnjnonnjnnkjnonkjnkjnjnjnnjnjnjnjnonjnjnnnkjnonkjnkjnjnjnnjnjnnnjnjnonknnnjnjnjnjnnnnnjnjnnkjnjnnknnjnnjnjnnkjnkjnjnjnjnjnjnjnjnjnnkjnkjnjnjnnjnnjnjnnjnhnjnonjnmnjnmnnnjnjnjnnjnjnnnkjnnnjnonnnkjnnjnhnjnmnjnmnnkjnjnjnjnjnjnjnnjnjnonnjnonknnnkjnjnkjnonkjnkjnjnjnnjnjnjnjnonjnjnnnkjnonkjnkjnjnjnnjnjnnnjnjnonknnnjnjnjnjnnnnnjnjnjnjnnnnnnknkjnjnjnonnjnjnonjnjnjnjnnn",
+"    09ggg2cgtrrdd27a2ckjnkjnknokjnnkjnjnnjnjnjnknjnnkjnkjnjnjnjnjnjnjnjnjnnkjnnjnmnjnjnjnjnjnjnjnjnhnjnkjnjnjnjnjnonnjnnkjnonkjnkjnjnjnnjnjnjnjnonjnjnnnkjnonkjnkjnjnjnnjnjnnnjnjnonknnnjnjnjnjnnnnnnnnjnjnnnkjnjnnknnjnnjnjnnkjnkjnjnjnjnjnjnjnjnjnnkjnkjnjnjnnjnnnjnnnjnjnnnnjnhnjnonjnmnjnmnnnjnjnjnnjnjnjnkjnnnjnonnnkjnnjnhnjnmnjnmnnkjnjnjnjnjnjnjnnjnjnonnjnonknnnkjnonkjnkjnjnjnnjnjnjnjnonjnjnnnkjnonkjnkjnjnjnnjnjnnnjnjnonknnnjnjnjnjnnnnnjnjnjnjnnnnnnknkjnjnjnonnjnjnonjnjnjnjnnn"
+    ),
+)
+
 class TestCase(unittest.TestCase):
 
     def assertCorrectMatchSubstringMapping(self, pattern, text, match):
@@ -21,13 +31,10 @@ class TestCase(unittest.TestCase):
                          text[text_start:text_start + match_len])
 
 
+
 class Test1Simple(TestCase):
 
-    def test1_import(self):
-        self.assertIsNotNone(importlib.import_module("gst"))
-
     def test2_single_full_match(self):
-        import gst
         pattern = b"hello"
         text = b"how delightful, hello there"
         matches = gst.match(pattern, '', text, '', len(pattern))
@@ -40,7 +47,6 @@ class Test1Simple(TestCase):
         self.assertCorrectMatchSubstringMapping(pattern, text, matches[0])
 
     def test3_single_partial_match(self):
-        import gst
         pattern = b"hello"
         text = b"we are in helsinki now"
         match_len = 3
@@ -56,7 +62,6 @@ class Test1Simple(TestCase):
         self.assertCorrectMatchSubstringMapping(pattern, text, matches[0])
 
     def test4_no_match(self):
-        import gst
         pattern = b"hello"
         text = b"go away, you nuisance"
         matches = gst.match(pattern, '', text, '', len(pattern))
@@ -67,6 +72,14 @@ class Test1Simple(TestCase):
         matches = gst.match(pattern_str, '', text_str, '', len(pattern_str))
         self.assertIsInstance(matches, list)
         self.assertEqual(len(matches), 0)
+
+
+class Test2EdgeCases(TestCase):
+
+    def test_edge_cases(self):
+        for a, b in EDGE_CASES:
+            matches = gst.match(a, '', b, '', 1)
+            self.assertGreater(len(matches), 0)
 
 
 @strategies.composite
@@ -96,14 +109,11 @@ def text_substring_and_minmatch_length(draw, **kwargs):
 
 class Test2RandomInputShortStrings(TestCase):
 
-    def setUp(self):
-        self.gst = importlib.import_module("gst")
-
     @settings(max_examples=300)
     @given(text_and_pattern=tuples_of_text_and_substring())
     def test1_full_match(self, text_and_pattern):
         text, pattern = text_and_pattern
-        matches = self.gst.match(pattern, '', text, '', len(pattern))
+        matches = gst.match(pattern, '', text, '', len(pattern))
         for match in matches:
             self.assertCorrectMatchSubstringMapping(pattern, text, match)
 
@@ -112,21 +122,18 @@ class Test2RandomInputShortStrings(TestCase):
     def test2_full_match_bytes(self, text_and_pattern):
         text, pattern = text_and_pattern
         pattern_bytes, text_bytes = pattern.encode("ascii"), text.encode("ascii")
-        matches = self.gst.match(pattern_bytes, '', text_bytes, '', len(pattern_bytes))
+        matches = gst.match(pattern_bytes, '', text_bytes, '', len(pattern_bytes))
         for match in matches:
             self.assertCorrectMatchSubstringMapping(pattern, text, match)
 
 
 class Test3RandomInputLongStrings(TestCase):
 
-    def setUp(self):
-        self.gst = importlib.import_module("gst")
-
     @settings(max_examples=10)
     @given(text_and_pattern=tuples_of_text_and_substring(text_min_size=100, text_max_size=2000))
     def test1_full_match(self, text_and_pattern):
         text, pattern = text_and_pattern
-        matches = self.gst.match(pattern, '', text, '', len(pattern))
+        matches = gst.match(pattern, '', text, '', len(pattern))
         for match in matches:
             self.assertCorrectMatchSubstringMapping(pattern, text, match)
 
@@ -135,11 +142,10 @@ class Test3RandomInputLongStrings(TestCase):
     def test2_full_match_bytes(self, text_and_pattern):
         text, pattern = text_and_pattern
         pattern_bytes, text_bytes = pattern.encode("ascii"), text.encode("ascii")
-        matches = self.gst.match(pattern_bytes, '', text_bytes, '', len(pattern_bytes))
+        matches = gst.match(pattern_bytes, '', text_bytes, '', len(pattern_bytes))
         for match in matches:
             self.assertCorrectMatchSubstringMapping(pattern, text, match)
 
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
-

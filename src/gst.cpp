@@ -205,6 +205,10 @@ Tiles match_strings(
     match_length_t length_of_tokens_tiled = 0u;
     match_length_t search_length = init_search_length;
 
+    // FIXME hack, for terminating loops on some pairs of input that cause infinite loops
+    match_length_t prev_length_of_tokens_tiled = 1u;
+    unsigned tiled_count_repeats = 0;
+
     Matches matches;
 
     // Search for all matches of maximal length and longer than search_length
@@ -220,8 +224,14 @@ Tiles match_strings(
             continue;
         }
 
+        prev_length_of_tokens_tiled = length_of_tokens_tiled;
         // Create new tiles by marking all unmarked tokens that participate in a maximal match
         length_of_tokens_tiled += markarrays<match_length_t>(pattern_marks, text_marks, matches, tiles);
+
+        // FIXME hack, terminate loop if the amount of tokens tiled stays the same for 10 iterations
+        if (length_of_tokens_tiled == prev_length_of_tokens_tiled && ++tiled_count_repeats > 10) {
+            break;
+        }
 
         if (search_length > 2 * init_search_length) {
             search_length >>= 1;
