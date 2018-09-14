@@ -35,7 +35,7 @@ Install without testing:
 ```
 pip install https://github.com/Aalto-LeTech/greedy-string-tiling/archive/master.zip
 ```
-Instead of installing the latest version, replace `master` with a desired version tag, e.g. `..-tiling/archive/0.9.0.zip`.
+To install some specific version, replace `master` with a desired git tag, e.g. `..-tiling/archive/0.9.0.zip`.
 
 Install and run tests:
 ```
