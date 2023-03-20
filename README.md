@@ -38,13 +38,13 @@ Just make sure the following executables can be found on your path:
 
 Install without testing:
 ```
-pip install https://github.com/Aalto-LeTech/greedy-string-tiling/archive/master.zip
+pip install https://github.com/apluslms/greedy-string-tiling/archive/master.zip
 ```
 To install some specific version, replace `master` with a desired git tag, e.g. `..-tiling/archive/0.9.0.zip`.
 
 Install and run tests:
 ```
-git clone --depth 1 https://github.com/Aalto-LeTech/greedy-string-tiling.git
+git clone --depth 1 https://github.com/apluslms/greedy-string-tiling.git
 cd greedy-string-tiling
 pip install . hypothesis
 python3 test.py
