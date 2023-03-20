@@ -21,6 +21,11 @@ This Python package implements a C++ extension of the Running Karp-Rabin Greedy 
 ```
 In general, ``match`` takes 5 arguments: ``string_a``, ``ignore_mask_a``, ``string_b``, ``ignore_mask_b``, ``minimum_match_length``, and produces a list of matches as 3-tuples: ``[(string_a_start_index, string_b_start_index, match_length), ...]``.
 
+## Example
+
+Simple [lorem ipsum example](./examples/lorem-ipsum) with matching substrings of two texts highlighted.
+![two columns of text side by side, with matching substrings highlighted using a background color](./examples/lorem-ipsum/example.png)
+
 ## Installing
 
 Python's ``setuptools`` will take care of compiling the extension.

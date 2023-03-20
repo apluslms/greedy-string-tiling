@@ -1,0 +1,37 @@
+{% macro annotated_matches(text) %}
+  {%- for char, match_pos, match_number in text -%}
+    {% if match_pos < 0 -%}
+      <span class="match-{{ match_number % num_match_colors }}">
+    {%- endif -%}
+      {{ char }}
+    {%- if match_pos > 0 -%}
+      </span>
+    {%- endif -%}
+  {% endfor %}
+{% endmacro -%}
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>lorem ipsum gst</title>
+    <link href="main.css" rel="stylesheet">
+  </head>
+  <body>
+    <h1>Matching substrings, minimum match length: {{ min_match_length }}</h1>
+    <div class="compare-container">
+      <div id="text1">
+        <h2>text 1</h2>
+        {{ annotated_matches(text1) }}
+      </div>
+      <div id="text2">
+        <h2>text 2</h2>
+        {{ annotated_matches(text2) }}
+      </div>
+    </div>
+    <footer>
+      <p>
+      text1 is an extract from <a href="https://la.wikisource.org/wiki/De_finibus_bonorum_et_malorum/Liber_Primus">De finibus bonorum et malorum</a> (Book 1) from Cicero, on Latin WikiSource.
+      </p>
+  </body>
+</html>
+
